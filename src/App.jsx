@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import MovieGrid from "./components/MovieGrid";
 import MovieDetail from "./components/MovieDetail";
 import AddMovieForm from "./components/AddMovieForm";
 import SearchBar from "./components/SearchBar";
+import Dashboard from "./components/Dashboard";
 import moviesData from "./data/movies";
 
 function App() {
@@ -11,6 +12,9 @@ function App() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [watchlist, setWatchlist] = useState([]);
   const [search, setSearch] = useState("");
+
+  const [totalMovies, setTotalMovies] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
 
   const addMovie = (movie) => {
     setMovies((prevMovies) => [...prevMovies, movie]);
@@ -26,6 +30,16 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    const total = movies.length;
+
+    const average =
+      movies.reduce((sum, movie) => sum + movie.rating, 0) / total;
+
+    setTotalMovies(total);
+    setAverageRating(average);
+  }, [movies]);
+
   const filteredMovies = movies.filter((movie) =>
     movie.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -35,6 +49,11 @@ function App() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto p-8">
+        <Dashboard
+          totalMovies={totalMovies}
+          averageRating={averageRating}
+        />
+
         <AddMovieForm onAddMovie={addMovie} />
 
         <SearchBar
