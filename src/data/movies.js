@@ -14,7 +14,7 @@ const movies = [
         "Elliot Page",
       ],
       poster:
-        "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
+        "https://m.media-amazon.com/images/M/MV5BMjExMjkwNTQ0Nl5BMl5BanBnXkFtZTcwNTY0OTk1Mw@@._V1_.jpg",
     },
     {
       id: 2,
@@ -82,7 +82,7 @@ const movies = [
         "Sharon Stone",
       ],
       poster:
-        "https://image.tmdb.org/t/p/w500/pvnPgukzyA8Nmk7d6FCvGxgA8LE.jpg",
+        "https://upload.wikimedia.org/wikipedia/en/0/04/Catwoman_poster.jpg",
     },
   ];
   

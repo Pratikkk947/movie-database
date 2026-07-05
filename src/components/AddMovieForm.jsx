@@ -5,6 +5,7 @@ function AddMovieForm({ onAddMovie }) {
   const [genre, setGenre] = useState("");
   const [year, setYear] = useState("");
   const [director, setDirector] = useState("");
+  const [poster, setPoster] = useState("");
   const [synopsis, setSynopsis] = useState("");
 
   const handleSubmit = (e) => {
@@ -16,6 +17,7 @@ function AddMovieForm({ onAddMovie }) {
       genre,
       year: Number(year),
       director,
+      poster,
       synopsis,
       rating: 7.0,
       cast: ["Unknown"],
@@ -27,6 +29,7 @@ function AddMovieForm({ onAddMovie }) {
     setGenre("");
     setYear("");
     setDirector("");
+    setPoster("");
     setSynopsis("");
   };
 
@@ -73,6 +76,15 @@ function AddMovieForm({ onAddMovie }) {
           value={director}
           onChange={(e) => setDirector(e.target.value)}
           className="border p-2 rounded"
+          required
+        />
+
+        <input
+          type="url"
+          placeholder="Poster URL"
+          value={poster}
+          onChange={(e) => setPoster(e.target.value)}
+          className="border p-2 rounded md:col-span-2"
           required
         />
       </div>
