@@ -1,4 +1,4 @@
-function MovieCard({ movie }) {
+function MovieCard({ movie, onSelectMovie }) {
     const getBadgeColor = () => {
       if (movie.rating >= 8) return "bg-green-500";
       if (movie.rating >= 5) return "bg-yellow-500";
@@ -6,8 +6,10 @@ function MovieCard({ movie }) {
     };
   
     return (
-      <div className="bg-white rounded-lg shadow p-4">
-  
+      <div
+        onClick={() => onSelectMovie(movie)}
+        className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-lg transition"
+      >
         <div className="bg-gray-300 h-56 rounded flex items-center justify-center">
           Poster
         </div>
@@ -21,7 +23,6 @@ function MovieCard({ movie }) {
         </p>
   
         <div className="flex justify-between items-center mt-3">
-  
           <span>{movie.year}</span>
   
           <span
@@ -29,7 +30,6 @@ function MovieCard({ movie }) {
           >
             ⭐ {movie.rating}
           </span>
-  
         </div>
       </div>
     );

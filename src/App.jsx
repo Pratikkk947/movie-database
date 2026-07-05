@@ -1,11 +1,13 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import MovieGrid from "./components/MovieGrid";
+import MovieDetail from "./components/MovieDetail";
 import AddMovieForm from "./components/AddMovieForm";
 import moviesData from "./data/movies";
 
 function App() {
   const [movies, setMovies] = useState(moviesData);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const addMovie = (movie) => {
     setMovies((prevMovies) => [...prevMovies, movie]);
@@ -22,7 +24,12 @@ function App() {
           Browse Movies
         </h2>
 
-        <MovieGrid movies={movies} />
+        <MovieGrid
+          movies={movies}
+          onSelectMovie={setSelectedMovie}
+        />
+
+        <MovieDetail movie={selectedMovie} />
       </div>
     </div>
   );
