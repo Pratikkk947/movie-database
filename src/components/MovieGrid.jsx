@@ -1,7 +1,6 @@
 import MovieCard from "./MovieCard";
-import movies from "../data/movies";
 
-function MovieGrid() {
+function MovieGrid({ movies }) {
   return (
     <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
       {movies.map((movie) => (
