@@ -13,6 +13,8 @@ const movies = [
         "Joseph Gordon-Levitt",
         "Elliot Page",
       ],
+      poster:
+        "https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
     },
     {
       id: 2,
@@ -22,12 +24,14 @@ const movies = [
       rating: 8.7,
       director: "Christopher Nolan",
       synopsis:
-        "A team of astronauts travels through a wormhole in search of a new home for humanity as Earth becomes increasingly uninhabitable.",
+        "A team of astronauts travels through a wormhole in search of a new home for humanity.",
       cast: [
         "Matthew McConaughey",
         "Anne Hathaway",
         "Jessica Chastain",
       ],
+      poster:
+        "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
     },
     {
       id: 3,
@@ -37,12 +41,14 @@ const movies = [
       rating: 7.9,
       director: "Matt Reeves",
       synopsis:
-        "Batman investigates a series of murders committed by the Riddler while uncovering corruption that threatens Gotham City.",
+        "Batman investigates murders committed by the Riddler while uncovering corruption in Gotham.",
       cast: [
         "Robert Pattinson",
         "Zoë Kravitz",
         "Paul Dano",
       ],
+      poster:
+        "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
     },
     {
       id: 4,
@@ -52,12 +58,14 @@ const movies = [
       rating: 5.1,
       director: "Daniel Espinosa",
       synopsis:
-        "A scientist suffering from a rare blood disease attempts an experimental cure, but it transforms him into a living vampire.",
+        "A scientist's attempt to cure a rare disease turns him into a living vampire.",
       cast: [
         "Jared Leto",
         "Matt Smith",
         "Adria Arjona",
       ],
+      poster:
+        "https://image.tmdb.org/t/p/w500/6nhwr1LCozBiIN47b8oBEomOADm.jpg",
     },
     {
       id: 5,
@@ -67,12 +75,14 @@ const movies = [
       rating: 3.4,
       director: "Pitof",
       synopsis:
-        "After a mysterious resurrection, a timid woman gains extraordinary cat-like abilities and seeks revenge against those who wronged her.",
+        "A shy woman gains cat-like powers after a mysterious resurrection and seeks revenge.",
       cast: [
         "Halle Berry",
         "Benjamin Bratt",
         "Sharon Stone",
       ],
+      poster:
+        "https://image.tmdb.org/t/p/w500/pvnPgukzyA8Nmk7d6FCvGxgA8LE.jpg",
     },
   ];
   

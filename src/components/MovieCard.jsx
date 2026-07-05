@@ -19,9 +19,11 @@ function MovieCard({
         onClick={() => onSelectMovie(movie)}
         className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-lg transition"
       >
-        <div className="bg-gray-300 h-56 rounded flex items-center justify-center">
-          Poster
-        </div>
+       <img
+  src={movie.poster}
+  alt={movie.title}
+  className="h-72 w-full object-cover rounded-lg"
+/>
   
         <h2 className="text-xl font-bold mt-4">
           {movie.title}
