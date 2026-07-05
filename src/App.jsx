@@ -3,12 +3,14 @@ import Navbar from "./components/Navbar";
 import MovieGrid from "./components/MovieGrid";
 import MovieDetail from "./components/MovieDetail";
 import AddMovieForm from "./components/AddMovieForm";
+import SearchBar from "./components/SearchBar";
 import moviesData from "./data/movies";
 
 function App() {
   const [movies, setMovies] = useState(moviesData);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [watchlist, setWatchlist] = useState([]);
+  const [search, setSearch] = useState("");
 
   const addMovie = (movie) => {
     setMovies((prevMovies) => [...prevMovies, movie]);
@@ -24,6 +26,10 @@ function App() {
     }
   };
 
+  const filteredMovies = movies.filter((movie) =>
+    movie.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -31,12 +37,17 @@ function App() {
       <div className="max-w-7xl mx-auto p-8">
         <AddMovieForm onAddMovie={addMovie} />
 
+        <SearchBar
+          search={search}
+          setSearch={setSearch}
+        />
+
         <h2 className="text-3xl font-bold mb-6">
           Browse Movies
         </h2>
 
         <MovieGrid
-          movies={movies}
+          movies={filteredMovies}
           onSelectMovie={setSelectedMovie}
           watchlist={watchlist}
           toggleWatchlist={toggleWatchlist}
