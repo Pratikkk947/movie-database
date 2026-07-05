@@ -1,9 +1,18 @@
-function MovieCard({ movie, onSelectMovie }) {
+function MovieCard({
+    movie,
+    onSelectMovie,
+    watchlist,
+    toggleWatchlist,
+  }) {
     const getBadgeColor = () => {
       if (movie.rating >= 8) return "bg-green-500";
       if (movie.rating >= 5) return "bg-yellow-500";
       return "bg-red-500";
     };
+  
+    const isInWatchlist = watchlist.some(
+      (item) => item.id === movie.id
+    );
   
     return (
       <div
@@ -31,6 +40,22 @@ function MovieCard({ movie, onSelectMovie }) {
             ⭐ {movie.rating}
           </span>
         </div>
+  
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWatchlist(movie);
+          }}
+          className={`mt-4 w-full py-2 rounded text-white ${
+            isInWatchlist
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          {isInWatchlist
+            ? "Remove from Watchlist"
+            : "Add to Watchlist"}
+        </button>
       </div>
     );
   }

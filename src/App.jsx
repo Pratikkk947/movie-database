@@ -8,9 +8,20 @@ import moviesData from "./data/movies";
 function App() {
   const [movies, setMovies] = useState(moviesData);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [watchlist, setWatchlist] = useState([]);
 
   const addMovie = (movie) => {
     setMovies((prevMovies) => [...prevMovies, movie]);
+  };
+
+  const toggleWatchlist = (movie) => {
+    const exists = watchlist.some((item) => item.id === movie.id);
+
+    if (exists) {
+      setWatchlist(watchlist.filter((item) => item.id !== movie.id));
+    } else {
+      setWatchlist([...watchlist, movie]);
+    }
   };
 
   return (
@@ -27,6 +38,8 @@ function App() {
         <MovieGrid
           movies={movies}
           onSelectMovie={setSelectedMovie}
+          watchlist={watchlist}
+          toggleWatchlist={toggleWatchlist}
         />
 
         <MovieDetail movie={selectedMovie} />
