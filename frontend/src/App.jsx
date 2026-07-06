@@ -18,30 +18,29 @@ function App() {
   const [averageRating, setAverageRating] = useState(0);
 
   const addMovie = (movie) => {
-    setMovies((prevMovies) => [...prevMovies, movie]);
+    setMovies((prev) => [...prev, movie]);
   };
 
   const toggleWatchlist = (movie) => {
     const exists = watchlist.some((item) => item.id === movie.id);
 
     if (exists) {
-      setWatchlist(
-        watchlist.filter((item) => item.id !== movie.id)
+      setWatchlist((prev) =>
+        prev.filter((item) => item.id !== movie.id)
       );
     } else {
-      setWatchlist([...watchlist, movie]);
+      setWatchlist((prev) => [...prev, movie]);
     }
   };
 
   useEffect(() => {
-    const total = movies.length;
+    setTotalMovies(movies.length);
 
-    const average =
+    const avg =
       movies.reduce((sum, movie) => sum + movie.rating, 0) /
-      total;
+      movies.length;
 
-    setTotalMovies(total);
-    setAverageRating(average);
+    setAverageRating(avg);
   }, [movies]);
 
   const filteredMovies = movies.filter((movie) =>
@@ -49,7 +48,7 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
       <Navbar
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -57,7 +56,9 @@ function App() {
 
       <div className="max-w-7xl mx-auto p-8">
 
-        {/* Browse Page */}
+        {/* ===========================
+            Browse
+        ============================ */}
 
         {currentPage === "browse" && (
           <>
@@ -71,53 +72,81 @@ function App() {
               setSearch={setSearch}
             />
 
-            <h2 className="text-3xl font-bold mb-6">
+            <h2 className="text-3xl font-bold mb-8">
               Browse Movies
             </h2>
 
             <MovieGrid
               movies={filteredMovies}
-              onSelectMovie={setSelectedMovie}
               watchlist={watchlist}
               toggleWatchlist={toggleWatchlist}
+              onSelectMovie={(movie) => {
+                setSelectedMovie(movie);
+                setCurrentPage("movie");
+              }}
             />
+          </>
+        )}
+
+        {/* ===========================
+            Watchlist
+        ============================ */}
+
+        {currentPage === "watchlist" && (
+          <>
+            <h2 className="text-3xl font-bold mb-8">
+              My Watchlist
+            </h2>
+
+            {watchlist.length === 0 ? (
+              <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
+                <h3 className="text-2xl font-semibold text-slate-700">
+                  Your watchlist is empty.
+                </h3>
+
+                <p className="text-slate-500 mt-3">
+                  Browse movies and add some favourites.
+                </p>
+              </div>
+            ) : (
+              <MovieGrid
+                movies={watchlist}
+                watchlist={watchlist}
+                toggleWatchlist={toggleWatchlist}
+                onSelectMovie={(movie) => {
+                  setSelectedMovie(movie);
+                  setCurrentPage("movie");
+                }}
+              />
+            )}
+          </>
+        )}
+
+        {/* ===========================
+            Add Movie
+        ============================ */}
+
+        {currentPage === "add" && (
+          <AddMovieForm onAddMovie={addMovie} />
+        )}
+
+        {/* ===========================
+            Movie Detail Page
+        ============================ */}
+
+        {currentPage === "movie" && selectedMovie && (
+          <>
+            <button
+              onClick={() => setCurrentPage("browse")}
+              className="mb-8 flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+            >
+              ← Back to Browse
+            </button>
 
             <MovieDetail movie={selectedMovie} />
           </>
         )}
 
-        {/* Watchlist Page */}
-
-        {currentPage === "watchlist" && (
-          <>
-            <h2 className="text-3xl font-bold mb-6">
-              My Watchlist
-            </h2>
-
-            {watchlist.length === 0 ? (
-              <p className="text-gray-500 text-lg">
-                No movies have been added to your watchlist.
-              </p>
-            ) : (
-              <>
-                <MovieGrid
-                  movies={watchlist}
-                  onSelectMovie={setSelectedMovie}
-                  watchlist={watchlist}
-                  toggleWatchlist={toggleWatchlist}
-                />
-
-                <MovieDetail movie={selectedMovie} />
-              </>
-            )}
-          </>
-        )}
-
-        {/* Add Movie Page */}
-
-        {currentPage === "add" && (
-          <AddMovieForm onAddMovie={addMovie} />
-        )}
       </div>
     </div>
   );
