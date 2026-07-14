@@ -1,126 +1,31 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import movies from "./data/movie.js";
+
+import connectDB from "./src/config/db.js";
+import movieRoutes from "./src/routes/movieRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
+// Database (Week 4 placeholder)
+connectDB();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3001;
-
-/* ==========================================
-   Test Route
-========================================== */
-
+// Home Route
 app.get("/", (req, res) => {
-  res.send("Movie API is running 🚀");
+  res.send("🎬 Movie Database API is running...");
 });
 
-/* ==========================================
-   Requirement 2
-   GET /api/movies
-========================================== */
+// Movie Routes
+app.use("/api/movies", movieRoutes);
 
-app.get("/api/movies", (req, res) => {
-  return res.status(200).json({
-    success: true,
-    count: movies.length,
-    data: movies,
-  });
-});
-
-/* ==========================================
-   Requirement 3
-   POST /api/movies
-========================================== */
-
-app.post("/api/movies", (req, res) => {
-  const { title, genre, year, director, synopsis } = req.body;
-
-  if (!title || !genre || !year || !director || !synopsis) {
-    return res.status(400).json({
-      success: false,
-      message: "Please provide all required fields.",
-    });
-  }
-
-  const newMovie = {
-    id: movies.length + 1,
-    title,
-    genre,
-    year,
-    director,
-    synopsis,
-    rating: 0,
-    cast: [],
-    poster: "",
-  };
-
-  movies.push(newMovie);
-
-  return res.status(201).json({
-    success: true,
-    message: "Movie added successfully.",
-    data: newMovie,
-  });
-});
-
-/* ==========================================
-   Requirement 4
-   GET /api/movies/:id
-========================================== */
-
-app.get("/api/movies/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const movie = movies.find((movie) => movie.id === id);
-
-  if (!movie) {
-    return res.status(404).json({
-      success: false,
-      message: "Movie not found.",
-    });
-  }
-
-  return res.status(200).json({
-    success: true,
-    data: movie,
-  });
-});
-
-/* ==========================================
-   Requirement 5
-   DELETE /api/movies/:id
-========================================== */
-
-app.delete("/api/movies/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const index = movies.findIndex((movie) => movie.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      message: "Movie not found.",
-    });
-  }
-
-  const deletedMovie = movies.splice(index, 1);
-
-  return res.status(200).json({
-    success: true,
-    message: "Movie deleted successfully.",
-    data: deletedMovie[0],
-  });
-});
-
-/* ==========================================
-   Start Server
-========================================== */
+// Server
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
