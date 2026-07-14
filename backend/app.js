@@ -56,8 +56,6 @@ app.post("/api/movies", (req, res) => {
     year,
     director,
     synopsis,
-
-    // Default values
     rating: 0,
     cast: [],
     poster: "",
@@ -69,6 +67,29 @@ app.post("/api/movies", (req, res) => {
     success: true,
     message: "Movie added successfully.",
     data: newMovie,
+  });
+});
+
+/* ==========================================
+   Requirement 4
+   GET /api/movies/:id
+========================================== */
+
+app.get("/api/movies/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const movie = movies.find((movie) => movie.id === id);
+
+  if (!movie) {
+    return res.status(404).json({
+      success: false,
+      message: "Movie not found.",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: movie,
   });
 });
 
