@@ -41,7 +41,6 @@ app.get("/api/movies", (req, res) => {
 app.post("/api/movies", (req, res) => {
   const { title, genre, year, director, synopsis } = req.body;
 
-  // Validation
   if (!title || !genre || !year || !director || !synopsis) {
     return res.status(400).json({
       success: false,
@@ -90,6 +89,32 @@ app.get("/api/movies/:id", (req, res) => {
   return res.status(200).json({
     success: true,
     data: movie,
+  });
+});
+
+/* ==========================================
+   Requirement 5
+   DELETE /api/movies/:id
+========================================== */
+
+app.delete("/api/movies/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const index = movies.findIndex((movie) => movie.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Movie not found.",
+    });
+  }
+
+  const deletedMovie = movies.splice(index, 1);
+
+  return res.status(200).json({
+    success: true,
+    message: "Movie deleted successfully.",
+    data: deletedMovie[0],
   });
 });
 
