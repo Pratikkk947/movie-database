@@ -1,29 +1,27 @@
 import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
 import movies from "./data/movie.js";
+
+dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
-// GET all movies
-app.get("/movie", (req, res) => {
-    return res.json(movies);
+// Test Route
+app.get("/", (req, res) => {
+  res.send("Movie API is running 🚀");
 });
 
-// POST new movie
-app.post("/movie", (req, res) => {
-    const mov = req.body;
-
-    movies.push(mov);
-
-    return res.status(201).json({
-        message: "Movie added successfully",
-        movie: mov
-    });
+// Get All Movies
+app.get("/api/movies", (req, res) => {
+  return res.json(movies);
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
