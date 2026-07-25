@@ -1,38 +1,21 @@
 import express from "express";
-
 import {
-  getAllMovies,
-  getMovieById,
-  addMovie,
-  deleteMovie,
+    getMovies,
+    getMovieById,
+    createMovie,
+    updateMovie,
 } from "../controllers/movieController.js";
 
-import validateMovie from "../validators/movievalidator.js";
+import { movieRules, validate } from "../validators/movieValidator.js";
+import authenticate from "../utils/middleware/auth.js"; // <-- Add this
 
 const router = express.Router();
 
-/*
-=========================================
-GET ALL MOVIES
-POST NEW MOVIE
-=========================================
-*/
+router.get("/", getMovies);
+router.get("/:id", getMovieById);
 
-router
-  .route("/")
-  .get(getAllMovies)
-  .post(validateMovie, addMovie);
+router.post("/", authenticate, movieRules, validate, createMovie);
 
-/*
-=========================================
-GET MOVIE BY ID
-DELETE MOVIE
-=========================================
-*/
-
-router
-  .route("/:id")
-  .get(getMovieById)
-  .delete(deleteMovie);
+router.put("/:id", authenticate, movieRules, validate, updateMovie);
 
 export default router;
