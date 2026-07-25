@@ -1,14 +1,17 @@
-/**
- * ===========================================
- * Database Configuration
- * ===========================================
- * Week 4:
- * MongoDB connection will be configured here.
- * ===========================================
- */
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+dotenv.config({
+    path:'./.env',
+})
+ const dbConnection=async()=>{
+    try{
+       
+       await mongoose.connect(process.env.MONGODB_URL)
+       console.log(`MongoDB successfully connected `)
+    }catch(error){
+        console.log(`MongoDB cannot be connected ${error.message}`)
+        process.exit()
+    }
 
-const connectDB = () => {
-    console.log("Database connection will be added in Week 4.");
-  };
-  
-  export default connectDB;
+}
+export default dbConnection;
