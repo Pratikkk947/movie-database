@@ -1,96 +1,52 @@
-import movies from "../../data/movies.js";
+import * as movieModel from "../models/movieModel.js";
 
-/**
- * ===========================================
- * GET /api/movies
- * Get all movies
- * ===========================================
- */
-export const getAllMovies = (req, res) => {
-  return res.status(200).json({
-    success: true,
-    count: movies.length,
-    data: movies,
-  });
-};
+// Handle GET /movies
+export async function getMovies(req, res) {
+    const movies = await movieModel.getAll();
+    return res.json(movies);
+}
 
-/**
- * ===========================================
- * GET /api/movies/:id
- * Get single movie by ID
- * ===========================================
- */
-export const getMovieById = (req, res) => {
-  const id = Number(req.params.id);
+// Handle GET /movies/:id
+export async function getMovieById(req, res) {
+    const movie = await movieModel.getById(req.params.id);
 
-  const movie = movies.find((movie) => movie.id === id);
+    if (!movie) {
+        return res.status(404).json({
+            error: "Movie not found for given id",
+        });
+    }
 
-  if (!movie) {
-    return res.status(404).json({
-      success: false,
-      message: "Movie not found.",
+    return res.status(200).json(movie);
+}
+
+
+// Handle POST /movies
+export async function createMovie(req, res) {
+    const newMovie = req.body;
+
+    const movie = await movieModel.addMovie(newMovie);
+
+    return res.status(201).json({
+        message: "Movie added successfully",
+        movie,
     });
-  }
+}
 
-  return res.status(200).json({
-    success: true,
-    data: movie,
-  });
-};
+// Handle PUT /movies/:id
+export async function updateMovie(req, res) {
+    const id = req.params.id;
+    const newMovie = req.body;
 
-/**
- * ===========================================
- * POST /api/movies
- * Add a new movie
- * ===========================================
- */
-export const addMovie = (req, res) => {
-  const { title, genre, year, director, synopsis } = req.body;
+    const updated = await movieModel.updateMovie(id, newMovie);
 
-  const newMovie = {
-    id: movies.length + 1,
-    title,
-    genre,
-    year,
-    director,
-    synopsis,
-    rating: 0,
-    cast: [],
-    poster: "",
-  };
+    if (!updated) {
+        return res.status(404).json({
+            error: "Movie not found for the given id",
+        });
+    }
 
-  movies.push(newMovie);
-
-  return res.status(201).json({
-    success: true,
-    message: "Movie added successfully.",
-    data: newMovie,
-  });
-};
-
-/**
- * ===========================================
- * DELETE /api/movies/:id
- * Delete movie by ID
- * ===========================================
- */
-export const deleteMovie = (req, res) => {
-  const id = Number(req.params.id);
-
-  const index = movies.findIndex((movie) => movie.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      message: "Movie not found.",
+    return res.status(200).json({
+        message: "Movie updated successfully",
+        movie: updated,
     });
-  }
-
-  const deletedMovie = movies.splice(index, 1);
-
-  return res.status(200).json({
-    success: true,
-    message: "Movie deleted successfully.",
-    data: deletedMovie[0],
-  });
-};
+}
