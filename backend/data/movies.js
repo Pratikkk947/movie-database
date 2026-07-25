@@ -1,89 +1,62 @@
-const movies = [
-    {
-      id: 1,
-      title: "Inception",
-      genre: "Sci-Fi",
-      year: 2010,
-      rating: 8.8,
+import mongoose from 'mongoose'
+import movie from './movie.js'
+import dotenv from 'dotenv'
+
+dotenv.config({
+    path:'./.env',
+})
+
+const SAMPLE_MOVIES = [
+    { 
+      title: "Interstellar", 
+      genre: "Sci-Fi/Drama", 
+      year: 2014, 
+      rating: 8.7, 
       director: "Christopher Nolan",
-      synopsis:
-        "A skilled thief enters people's dreams to steal valuable secrets. He is offered a chance to erase his criminal past by planting an idea into someone's mind instead.",
-      cast: [
-        "Leonardo DiCaprio",
-        "Joseph Gordon-Levitt",
-        "Elliot Page",
-      ],
-      poster:
-        "https://m.media-amazon.com/images/M/MV5BMjExMjkwNTQ0Nl5BMl5BanBnXkFtZTcwNTY0OTk1Mw@@._V1_.jpg",
+      synopsis: "A team of explorers travels through a wormhole near Saturn in search of a new home for humanity.",
+      poster: "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg" 
     },
-    {
-      id: 2,
-      title: "Interstellar",
-      genre: "Adventure",
-      year: 2014,
-      rating: 8.7,
+    { 
+      title: "Inception", 
+      genre: "Sci-Fi/Thriller", 
+      year: 2010, 
+      rating: 8.8, 
       director: "Christopher Nolan",
-      synopsis:
-        "A team of astronauts travels through a wormhole in search of a new home for humanity.",
-      cast: [
-        "Matthew McConaughey",
-        "Anne Hathaway",
-        "Jessica Chastain",
-      ],
-      poster:
-        "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+      synopsis: "A skilled thief who steals secrets through dream-sharing technology is given a chance to erase his past by performing an impossible task.",
+      poster: "https://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg" 
     },
-    {
-      id: 3,
-      title: "The Batman",
-      genre: "Action",
-      year: 2022,
-      rating: 7.9,
-      director: "Matt Reeves",
-      synopsis:
-        "Batman investigates murders committed by the Riddler while uncovering corruption in Gotham.",
-      cast: [
-        "Robert Pattinson",
-        "Zoë Kravitz",
-        "Paul Dano",
-      ],
-      poster:
-        "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
+    { 
+      title: "Dangal", 
+      genre: "Biography/Drama", 
+      year: 2016, 
+      rating: 8.3, 
+      director: "Nitesh Tiwari",
+      synopsis: "A former wrestler trains his daughters to become world-class wrestlers despite social challenges.",
+      poster: "https://upload.wikimedia.org/wikipedia/en/9/99/Dangal_Poster.jpg" 
     },
-    {
-      id: 4,
-      title: "Morbius",
-      genre: "Action",
-      year: 2022,
-      rating: 5.1,
-      director: "Daniel Espinosa",
-      synopsis:
-        "A scientist's attempt to cure a rare disease turns him into a living vampire.",
-      cast: [
-        "Jared Leto",
-        "Matt Smith",
-        "Adria Arjona",
-      ],
-      poster:
-        "https://image.tmdb.org/t/p/w500/6nhwr1LCozBiIN47b8oBEomOADm.jpg",
+    { 
+      title: "The Dark Knight", 
+      genre: "Action/Crime", 
+      year: 2008, 
+      rating: 9.0, 
+      director: "Christopher Nolan",
+      synopsis: "Batman faces a criminal mastermind who creates chaos and pushes Gotham City into fear and destruction.",
+      poster: "https://upload.wikimedia.org/wikipedia/en/8/8a/Dark_Knight.jpg" 
     },
-    {
-      id: 5,
-      title: "Catwoman",
-      genre: "Fantasy",
-      year: 2004,
-      rating: 3.4,
-      director: "Pitof",
-      synopsis:
-        "A shy woman gains cat-like powers after a mysterious resurrection and seeks revenge.",
-      cast: [
-        "Halle Berry",
-        "Benjamin Bratt",
-        "Sharon Stone",
-      ],
-      poster:
-        "https://upload.wikimedia.org/wikipedia/en/0/04/Catwoman_poster.jpg",
-    },
-  ];
-  
-  export default movies;
+    { 
+      title: "Avatar", 
+      genre: "Sci-Fi/Adventure", 
+      year: 2009, 
+      rating: 7.9, 
+      director: "James Cameron",
+      synopsis: "A marine on an alien planet becomes torn between following orders and protecting the world he has learned to call home.",
+      poster: "https://upload.wikimedia.org/wikipedia/en/b/b0/Avatar-Teaser-Poster.jpg" 
+    }
+];
+
+const connection = mongoose.connect(process.env.MONGODB_URL)
+
+await movie.deleteMany({})
+await movie.insertMany(SAMPLE_MOVIES)
+
+export default SAMPLE_MOVIES;
