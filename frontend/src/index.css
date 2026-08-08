@@ -1,7 +1,30 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+
+  /* Deep cinema base */
+  --color-cinema-950: #07070d;
+  --color-cinema-900: #0c0c15;
+  --color-cinema-850: #10101c;
+  --color-cinema-800: #14141f;
+  --color-cinema-750: #181824;
+  --color-cinema-700: #1e1e2d;
+  --color-cinema-600: #2a2a3f;
+  --color-cinema-500: #3b3b55;
+
+  /* Metallic gold accent */
+  --color-gold-200: #fbeac3;
+  --color-gold-300: #f7d684;
+  --color-gold-400: #f0bf5e;
+  --color-gold-500: #e3a83f;
+  --color-gold-600: #c98a2b;
+  --color-gold-700: #a66c1f;
+}
+
 /* -----------------------------
-   Global Theme
+   Global Theme — Dark Cinema
 ------------------------------ */
 
 html,
@@ -12,15 +35,16 @@ body,
 
 body {
   margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  color: #0f172a;
-
-  background: linear-gradient(
-    135deg,
-    #f8fafc 0%,
-    #ffffff 45%,
-    #eef2ff 100%
-  );
+  font-family: var(--font-sans);
+  color: #e7e9f2;
+  background-color: #07070d;
+  background-image:
+    radial-gradient(1100px 500px at 15% -10%, rgba(88, 88, 180, 0.14) 0%, transparent 60%),
+    radial-gradient(1000px 600px at 110% 0%, rgba(227, 168, 63, 0.08) 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 120%, rgba(88, 88, 180, 0.1) 0%, transparent 60%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* -----------------------------
@@ -33,12 +57,19 @@ h3,
 h4,
 h5,
 h6 {
-  color: #0f172a;
+  font-family: var(--font-display);
+  color: #f2f4fb;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 p {
-  color: #64748b;
+  color: #9aa3ba;
+}
+
+::selection {
+  background: rgba(227, 168, 63, 0.3);
+  color: #f2f4fb;
 }
 
 /* -----------------------------
@@ -54,17 +85,23 @@ button:hover {
   transform: translateY(-2px);
 }
 
+button:active {
+  transform: translateY(0);
+}
+
 /* -----------------------------
    Inputs
 ------------------------------ */
 
 input,
-textarea {
+textarea,
+select {
   transition: all 0.25s ease;
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
 }
 
@@ -73,11 +110,12 @@ textarea:focus {
 ------------------------------ */
 
 .card {
-  background: white;
+  background: linear-gradient(180deg, #151521 0%, #10101c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 24px;
   box-shadow:
-    0 10px 25px rgba(0,0,0,.06),
-    0 2px 8px rgba(0,0,0,.04);
+    0 18px 40px rgba(0, 0, 0, 0.45),
+    0 3px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* -----------------------------
@@ -86,17 +124,29 @@ textarea:focus {
 
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
+  background: #2a2a3f;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #3b3b55;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* -----------------------------
+   Utility helpers
+------------------------------ */
+
+.text-gradient-gold {
+  background: linear-gradient(100deg, #f7d684 0%, #e3a83f 55%, #a66c1f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }

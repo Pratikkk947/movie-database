@@ -1,78 +1,65 @@
-import { Film, Heart, PlusCircle } from "lucide-react";
+import React from "react";
 
-function Navbar({ currentPage, setCurrentPage }) {
-  const navItems = [
-    {
-      id: "browse",
-      label: "Browse",
-      icon: <Film size={18} />,
-    },
-    {
-      id: "watchlist",
-      label: "Watchlist",
-      icon: <Heart size={18} />,
-    },
-    {
-      id: "add",
-      label: "Add Movie",
-      icon: <PlusCircle size={18} />,
-    },
-  ];
-
+const Navbar = ({ onAddClick, showForm, onBrowse, onWatchlist, isWatchlistView, user, onLogin, onLogout }) => {
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-8 py-5">
+    <nav className="bg-cinema-900/80 backdrop-blur-xl border-b border-white/[0.06] p-4 flex justify-between items-center sticky top-0 z-50">
+      <h1
+        onClick={onBrowse}
+        className="text-xl font-display font-extrabold tracking-tight cursor-pointer text-gradient-gold"
+      >
+        MOVIE APP
+      </h1>
 
-        {/* Logo */}
+      <div className="flex items-center gap-6">
+        {user && <div className="hidden md:flex space-x-6 font-medium">
+          <button
+            onClick={onBrowse}
+            className={`transition-colors ${!isWatchlistView && !showForm ? "text-gold-400 font-bold" : "text-slate-400 hover:text-slate-200"}`}
+          >
+            Browse
+          </button>
+          <button
+            onClick={onWatchlist}
+            className={`transition-colors ${isWatchlistView ? "text-gold-400 font-bold" : "text-slate-400 hover:text-slate-200"}`}
+          >
+            Watch Later
+          </button>
+        </div>}
 
-        <div className="flex items-center gap-3">
-
-          <div className="bg-indigo-600 text-white p-3 rounded-xl shadow-lg">
-            <Film size={24} />
+        {user && (
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-cinema-950 font-black flex items-center justify-center text-sm shadow-md">
+              {(user.username?.[0] || "U").toUpperCase()}
+            </span>
+            <span className="text-sm font-bold text-slate-200">{user.username}</span>
           </div>
+        )}
 
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">
-              MovieDB
-            </h1>
-
-            <p className="text-sm text-slate-500">
-              Movie Collection
-            </p>
-          </div>
-
-        </div>
-
-        {/* Navigation */}
-
-        <ul className="flex items-center gap-4">
-
-          {navItems.map((item) => (
-
-            <li
-              key={item.id}
-              onClick={() => setCurrentPage(item.id)}
-              className={`flex items-center gap-2 px-5 py-2 rounded-full cursor-pointer transition-all duration-300 font-medium
-
-              ${
-                currentPage === item.id
-                  ? "bg-indigo-600 text-white shadow-md"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-indigo-600"
-              }`}
-            >
-              {item.icon}
-
-              {item.label}
-
-            </li>
-
-          ))}
-
-        </ul>
-
+        {user && <button
+          onClick={onAddClick}
+          className={`${showForm ? "bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25" : "bg-gradient-to-r from-gold-400 to-gold-600 text-cinema-950 hover:from-gold-300 hover:to-gold-500"
+            } px-4 py-1.5 rounded-lg font-bold transition-all shadow-sm text-sm`}
+        >
+          {showForm ? "Close Form" : "+ Add Movie"}
+        </button>}
+        {user ? (
+          <button
+            onClick={onLogout}
+            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold text-slate-300 transition hover:bg-white/5 hover:text-white"
+          >
+            Log out
+          </button>
+        ) : (
+          <button
+            onClick={onLogin}
+            className="rounded-lg bg-gradient-to-r from-gold-400 to-gold-600 px-4 py-1.5 text-xs font-bold text-cinema-950 transition hover:from-gold-300 hover:to-gold-500 shadow-lg shadow-gold-500/20"
+          >
+            Login
+          </button>
+        )}
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

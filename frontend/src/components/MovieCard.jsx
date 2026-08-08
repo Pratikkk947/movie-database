@@ -1,99 +1,56 @@
-import { Calendar, Heart, Star, Tag } from "lucide-react";
+import React from "react";
 
-function MovieCard({
-  movie,
-  onSelectMovie,
-  watchlist,
-  toggleWatchlist,
-}) {
-  const getBadgeColor = () => {
-    if (movie.rating >= 8)
-      return "bg-green-500";
-
-    if (movie.rating >= 5)
-      return "bg-amber-500";
-
-    return "bg-red-500";
+const MovieCard = ({ movie, onClick, onToggleWatchlist, isWatchlisted }) => {
+  const getRatingColor = (rating) => {
+    if (rating >= 8) return "bg-gradient-to-br from-gold-400 to-gold-600 text-cinema-950";
+    if (rating >= 5) return "bg-slate-700 text-gold-300";
+    return "bg-red-500/90 text-white";
   };
-
-  const isInWatchlist = watchlist.some(
-    (item) => item.id === movie.id
-  );
 
   return (
     <div
-      onClick={() => onSelectMovie(movie)}
-      className="group bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-200 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+      onClick={() => onClick(movie)}
+      className="bg-gradient-to-b from-cinema-800 to-cinema-900 rounded-2xl shadow-xl shadow-black/40 hover:shadow-2xl hover:shadow-black/60 hover:-translate-y-2 border border-white/[0.06] overflow-hidden transition-all duration-300 h-full cursor-pointer group"
     >
-      {/* Poster */}
-
-      <div className="relative overflow-hidden">
-
+      <div className="relative aspect-[2/3] overflow-hidden bg-cinema-700">
         <img
           src={movie.poster}
           alt={movie.title}
-          className="w-full h-80 object-cover group-hover:scale-105 transition duration-500"
+          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+          onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop";
+          }}
         />
-
-        {/* Rating */}
-
-        <div
-          className={`absolute top-4 right-4 ${getBadgeColor()} text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg`}
-        >
-          <Star size={14} fill="white" />
-          {movie.rating}
+        <div className="absolute inset-0 bg-gradient-to-t from-cinema-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute top-3 right-3">
+          <span className={`px-2 py-1 rounded shadow-md text-xs font-bold ${getRatingColor(movie.rating)}`}>
+            {movie.rating} ★
+          </span>
         </div>
-
       </div>
-
-      {/* Content */}
-
       <div className="p-5">
-
-        <h2 className="text-xl font-bold text-slate-900 line-clamp-1">
-          {movie.title}
-        </h2>
-
-        <div className="flex items-center gap-2 mt-3 text-slate-500 text-sm">
-          <Tag size={16} />
-
-          <span>{movie.genre}</span>
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-bold truncate pr-2 text-white">{movie.title}</h3>
         </div>
+        <p className="text-slate-400 text-sm mb-5">{movie.genre} | {movie.year}</p>
 
-        <div className="flex items-center gap-2 mt-2 text-slate-500 text-sm">
-          <Calendar size={16} />
-
-          <span>{movie.year}</span>
-        </div>
-
-        {/* Button */}
-
+        {/* Watchlist Button */}
         <button
           onClick={(e) => {
-            e.stopPropagation();
-            toggleWatchlist(movie);
+            e.stopPropagation(); // Prevent opening detail view when clicking button
+            onToggleWatchlist(movie);
           }}
-          className={`mt-6 w-full flex items-center justify-center gap-2 rounded-xl py-3 font-semibold transition-all duration-300
-
-          ${
-            isInWatchlist
-              ? "bg-red-500 hover:bg-red-600 text-white"
-              : "bg-indigo-600 hover:bg-indigo-700 text-white"
+          className={`w-full py-2.5 rounded-xl font-bold transition-all duration-200 ${
+            isWatchlisted
+              ? "bg-gold-500/10 text-gold-300 border border-gold-500/25 hover:bg-gold-500/20"
+              : "bg-gradient-to-r from-gold-400 to-gold-600 text-cinema-950 hover:from-gold-300 hover:to-gold-500 shadow-lg shadow-gold-500/15 hover:shadow-gold-500/25"
           }`}
         >
-          <Heart
-            size={18}
-            fill={isInWatchlist ? "white" : "none"}
-          />
-
-          {isInWatchlist
-            ? "Remove from Watchlist"
-            : "Add to Watchlist"}
+          {isWatchlisted ? "Remove from Watch Later" : "Add to Watch Later"}
         </button>
-
       </div>
     </div>
   );
-}
+};
 
 export default MovieCard;

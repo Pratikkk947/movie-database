@@ -1,247 +1,175 @@
-import { useState } from "react";
-import {
-  Film,
-  Calendar,
-  User,
-  Image,
-  FileText,
-  Tag,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
 
-function AddMovieForm({ onAddMovie }) {
-  const [title, setTitle] = useState("");
-  const [genre, setGenre] = useState("");
-  const [year, setYear] = useState("");
-  const [director, setDirector] = useState("");
-  const [poster, setPoster] = useState("");
-  const [synopsis, setSynopsis] = useState("");
+const InputWrapper = ({ icon, children, label }) => (
+  <div className="space-y-1.5 flex-1">
+    <label className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+      <span>{icon}</span> {label}
+    </label>
+    <div className="relative group">
+      {children}
+    </div>
+  </div>
+);
 
-  const clearForm = () => {
-    setTitle("");
-    setGenre("");
-    setYear("");
-    setDirector("");
-    setPoster("");
-    setSynopsis("");
-  };
+const AddMovieForm = ({ onAddMovie, onCancel, movieToEdit, onUpdateMovie }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    genre: "",
+    year: "",
+    director: "",
+    synopsis: "",
+    poster: ""
+  });
+
+  // Pre-populate if editing
+  useEffect(() => {
+    if (movieToEdit) {
+      setFormData({
+        title: movieToEdit.title || "",
+        genre: movieToEdit.genre || "",
+        year: movieToEdit.year || movieToEdit.releaseYear || "",
+        director: movieToEdit.director || "",
+        synopsis: movieToEdit.synopsis || movieToEdit.description || "",
+        poster: movieToEdit.poster || movieToEdit.image || ""
+      });
+    }
+  }, [movieToEdit]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const newMovie = {
-      id: Date.now(),
-      title,
-      genre,
-      year: Number(year),
-      director,
-      poster,
-      synopsis,
-      rating: 7.0,
-      cast: ["Unknown"],
+    // basic validation
+    if (!formData.title || !formData.genre) {
+      return alert("Please fill at least Title and Genre");
+    }
+    
+    const payload = {
+      ...formData,
+      year: Number(formData.year) || new Date().getFullYear(),
+      poster: formData.poster || "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop"
     };
 
-    onAddMovie(newMovie);
-
-    clearForm();
+    if (movieToEdit) {
+      onUpdateMovie(movieToEdit._id || movieToEdit.id, payload);
+    } else {
+      onAddMovie({ 
+        ...payload, 
+        rating: 5.0, // Default rating for new movies
+      });
+    }
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden"
-      >
-        {/* Header */}
+    <div className="card p-8 max-w-2xl mx-auto my-4 transition-all duration-300">
+      <header className="mb-8 text-center sm:text-left">
+        <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
+          <span className="text-3xl">{movieToEdit ? "✏️" : "🎬"}</span>
+          <h2 className="text-3xl font-black text-white tracking-tight">
+            {movieToEdit ? "Edit Movie" : "Add New Movie"}
+          </h2>
+        </div>
+        <p className="text-slate-400 font-medium ml-0 sm:ml-12">
+          {movieToEdit ? "Update details for this movie." : "Fill in the details below to add a new movie."}
+        </p>
+      </header>
 
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
+          {/* Movie Title */}
+          <InputWrapper icon="🎬" label="Movie Title">
+            <input 
+              type="text" 
+              placeholder="e.g. Inception" 
+              required
+              className="w-full bg-cinema-850/70 border border-white/10 rounded-xl px-4 py-3 focus:bg-cinema-850 focus:outline-none focus:ring-4 focus:ring-gold-500/20 focus:border-gold-500/50 transition-all font-medium text-white placeholder-slate-500"
+              value={formData.title}
+              onChange={(e) => setFormData({...formData, title: e.target.value})}
+            />
+          </InputWrapper>
 
-          <div className="flex items-center gap-4">
+          {/* Genre */}
+          <InputWrapper icon="🏷" label="Genre">
+            <select 
+              required
+              className="w-full bg-cinema-850/70 border border-white/10 rounded-xl px-4 py-3 focus:bg-cinema-850 focus:outline-none focus:ring-4 focus:ring-gold-500/20 focus:border-gold-500/50 transition-all font-medium text-white [&>option]:bg-cinema-800"
+              value={formData.genre}
+              onChange={(e) => setFormData({...formData, genre: e.target.value})}
+            >
+              <option value="" className="bg-cinema-800">Select a Genre</option>
+              <option value="Sci-Fi/Drama">Sci-Fi/Drama</option>
+              <option value="Sci-Fi/Thriller">Sci-Fi/Thriller</option>
+              <option value="Biography/Drama">Biography/Drama</option>
+              <option value="Action/Crime">Action/Crime</option>
+              <option value="Sci-Fi/Adventure">Sci-Fi/Adventure</option>
+              <option value="Romance/Action">Romance/Action</option>
+              <option value="Romance/Drama">Romance/Drama</option>
+              <option value="Action/Drama">Action/Drama</option>
+              <option value="Comedy/Drama">Comedy/Drama</option>
+              <option value="Action/Thriller">Action/Thriller</option>
+            </select>
+          </InputWrapper>
 
-            <Film size={38} />
-
-            <div>
-
-              <h2 className="text-3xl font-bold">
-                Add New Movie
-              </h2>
-
-              <p className="text-indigo-100">
-                Fill in the movie details below.
-              </p>
-
-            </div>
-
+          {/* Year and Director Row */}
+          <div className="flex flex-col sm:flex-row gap-6">
+            <InputWrapper icon="📅" label="Release Year">
+              <input 
+                type="number" 
+                placeholder="2024" 
+                className="w-full bg-cinema-850/70 border border-white/10 rounded-xl px-4 py-3 focus:bg-cinema-850 focus:outline-none focus:ring-4 focus:ring-gold-500/20 focus:border-gold-500/50 transition-all font-medium text-white placeholder-slate-500"
+                value={formData.year}
+                onChange={(e) => setFormData({...formData, year: e.target.value})}
+              />
+            </InputWrapper>
+            <InputWrapper icon="👤" label="Director">
+              <input 
+                type="text" 
+                placeholder="Christopher Nolan" 
+                className="w-full bg-cinema-850/70 border border-white/10 rounded-xl px-4 py-3 focus:bg-cinema-850 focus:outline-none focus:ring-4 focus:ring-gold-500/20 focus:border-gold-500/50 transition-all font-medium text-white placeholder-slate-500"
+                value={formData.director}
+                onChange={(e) => setFormData({...formData, director: e.target.value})}
+              />
+            </InputWrapper>
           </div>
 
+          {/* Poster URL */}
+          <InputWrapper icon="🔗" label="Poster Image URL">
+            <input 
+              type="text" 
+              placeholder="https://example.com/poster.jpg" 
+              className="w-full bg-cinema-850/70 border border-white/10 rounded-xl px-4 py-3 focus:bg-cinema-850 focus:outline-none focus:ring-4 focus:ring-gold-500/20 focus:border-gold-500/50 transition-all font-medium text-white placeholder-slate-500"
+              value={formData.poster}
+              onChange={(e) => setFormData({...formData, poster: e.target.value})}
+            />
+          </InputWrapper>
+
+          {/* Synopsis */}
+          <InputWrapper icon="📝" label="Synopsis / Description">
+            <textarea 
+              placeholder="A brief description of the movie..." 
+              className="w-full bg-cinema-850/70 border border-white/10 rounded-xl px-4 py-3 h-32 focus:bg-cinema-850 focus:outline-none focus:ring-4 focus:ring-gold-500/20 focus:border-gold-500/50 transition-all font-medium text-white placeholder-slate-500 resize-none"
+              value={formData.synopsis}
+              onChange={(e) => setFormData({...formData, synopsis: e.target.value})}
+            />
+          </InputWrapper>
         </div>
 
-        {/* Body */}
-
-        <div className="grid lg:grid-cols-3 gap-10 p-8">
-
-          {/* Form */}
-
-          <div className="lg:col-span-2 space-y-6">
-
-            <div className="grid md:grid-cols-2 gap-5">
-
-              <div>
-                <label className="font-semibold mb-2 flex items-center gap-2">
-                  <Film size={16} />
-                  Movie Title
-                </label>
-
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Inception"
-                  className="w-full border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold mb-2 flex items-center gap-2">
-                  <Tag size={16} />
-                  Genre
-                </label>
-
-                <input
-                  type="text"
-                  value={genre}
-                  onChange={(e) => setGenre(e.target.value)}
-                  placeholder="Sci-Fi"
-                  className="w-full border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold mb-2 flex items-center gap-2">
-                  <Calendar size={16} />
-                  Year
-                </label>
-
-                <input
-                  type="number"
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                  placeholder="2025"
-                  className="w-full border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold mb-2 flex items-center gap-2">
-                  <User size={16} />
-                  Director
-                </label>
-
-                <input
-                  type="text"
-                  value={director}
-                  onChange={(e) => setDirector(e.target.value)}
-                  placeholder="Christopher Nolan"
-                  className="w-full border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-
-            </div>
-
-            <div>
-
-              <label className="font-semibold mb-2 flex items-center gap-2">
-                <Image size={16} />
-                Poster URL
-              </label>
-
-              <input
-                type="url"
-                value={poster}
-                onChange={(e) => setPoster(e.target.value)}
-                placeholder="https://..."
-                className="w-full border border-slate-300 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500"
-                required
-              />
-
-            </div>
-
-            <div>
-
-              <label className="font-semibold mb-2 flex items-center gap-2">
-                <FileText size={16} />
-                Synopsis
-              </label>
-
-              <textarea
-                rows="6"
-                value={synopsis}
-                onChange={(e) => setSynopsis(e.target.value)}
-                className="w-full border border-slate-300 rounded-xl p-4 resize-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="Write a short movie description..."
-                required
-              />
-
-            </div>
-
-            <div className="flex justify-end gap-4">
-
-              <button
-                type="button"
-                onClick={clearForm}
-                className="px-7 py-3 rounded-xl border border-slate-300 hover:bg-slate-100 transition"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-lg hover:scale-105 transition"
-              >
-                + Add Movie
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* Poster Preview */}
-
-          <div>
-
-            <h3 className="font-bold text-xl mb-4">
-              Poster Preview
-            </h3>
-
-            <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100">
-
-              {poster ? (
-                <img
-                  src={poster}
-                  alt="Poster Preview"
-                  className="w-full h-[520px] object-cover"
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                  }}
-                />
-              ) : (
-                <div className="h-[520px] flex items-center justify-center text-slate-400">
-                  No Poster Selected
-                </div>
-              )}
-
-            </div>
-
-          </div>
-
+        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+          <button 
+            type="submit" 
+            className="flex-1 bg-gradient-to-r from-gold-400 to-gold-600 text-cinema-950 py-4 rounded-xl font-bold hover:from-gold-300 hover:to-gold-500 hover:shadow-lg hover:shadow-gold-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
+          >
+            <span>💾</span> {movieToEdit ? "Update Movie" : "Save Movie"}
+          </button>
+          <button 
+            type="button" 
+            onClick={onCancel} 
+            className="flex-1 bg-white/[0.06] text-slate-300 py-4 rounded-xl font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+          >
+            Cancel
+          </button>
         </div>
-
       </form>
     </div>
   );
-}
+};
 
 export default AddMovieForm;

@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install and build frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Verify backend starts and serves
+        working-directory: backend
+        env:
+          NODE_ENV: ci
+          PORT: 3001
+          MONGO_URI: mongodb://localhost:27017/ci
+          JWT_SECRET: ci-only-secret
+        run: |
+          node server.js &
+          sleep 6
+          curl -sf http://localhost:3001/api/movies && echo " -> Backend started and serving OK"

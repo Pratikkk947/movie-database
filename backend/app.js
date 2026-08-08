@@ -1,26 +1,51 @@
 import express from "express";
 import cors from "cors";
-import SAMPLE_MOVIES from "./data/movies.js";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import movieRouter from "./src/routes/movieRoutes.js";
-import authRoutes from "./src/routes/authRoutes.js";
-import dbConnection from './src/config/db.js'
+import dbConnection from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import movieRoutes from "./routes/movieRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
+// Express Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Mount the movie router under /movies
+// CORS configuration supporting credentials from the frontend.
+// Allow any http://localhost:* dev origin plus the configured FRONTEND_URL.
+app.use(cors({
+    origin: (origin, callback) => {
+        const allowed = process.env.FRONTEND_URL;
+        if (
+            !origin ||
+            (allowed && allowed.split(",").includes(origin)) ||
+            /^http:\/\/localhost:\d+$/.test(origin)
+        ) {
+            return callback(null, true);
+        }
+        return callback(null, false);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
+}));
 
-app.use("/movies", movieRouter);
-app.use("/auth", authRoutes);
+// Connect to MongoDB
+await dbConnection();
 
-await dbConnection()
+// Mount Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/movies", movieRoutes);
+app.use("/api/ai", aiRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Fallback Route
+app.use((req, res) => {
+    res.status(404).json({ error: "Route not found" });
 });
+
+export default app;
